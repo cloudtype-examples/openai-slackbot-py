@@ -25,42 +25,26 @@ def test(message, say):
 @app.event("message")
 def handle_direct_message(message, say):
 
-    start_sequence = "\nAI:"
-    restart_sequence = "\nHuman: "
+    print(message)
 
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\nHuman: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\nHuman: {message}",
-        temperature=0.9,
-        max_tokens=500,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0.6,
-        stop=[" Human:", " AI:"]
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"{message['text']}"}]
     )
     
     print(response)
-    say(response.choices[0].text)
+    say(response.choices[0].message.content)
 
 @app.event("app_mention")
 def handle_mention(message, say):
-    
-    start_sequence = "\nAI:"
-    restart_sequence = "\nHuman: "
 
-    response = openai.Completion.create(
-        model="text-davinci-003",
-        prompt=f"The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly.\n\nHuman: Hello, who are you?\nAI: I am an AI created by OpenAI. How can I help you today?\nHuman: {message}",
-        temperature=0.9,
-        max_tokens=500,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0.6,
-        stop=[" Human:", " AI:"]
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "user", "content": f"{message['text']}"}]
     )
     
     print(response)
-    say(response.choices[0].text)
+    say(response.choices[0].message.content)
 
 if __name__ == "__main__":
     handler = SocketModeHandler(app, os.environ.get("SLACK_APP_TOKEN"))
